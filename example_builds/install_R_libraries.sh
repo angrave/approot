@@ -1,4 +1,5 @@
 #!/bin/bash
+
 set -e
 
 #R -e 'install.packages("rjags",repos="http://cran.us.r-project.org")'

@@ -147,44 +147,5 @@ approot_deactivate() {
   unset APPROOT_PATH
 } # approot_deactivate
 
-
-approot_require_env() {
-  if [ ! -d "${APPROOT}" ] ; then
-    >2& echo "APPROOT must point to a valid directory. Use approot_init then approot_activate"
-    return 1
-  fi
-  if [ ! "$APPROOT_BUILD" ] ; then
-    >2& echo "APPROOT_BUILD must be set. Use approot_init then approot_activate"
-    return 1
-  fi
-  return 0
-}
-
-approot_build() {
-  [ approot_require_env ] || return
-
-  local URL_BASE="$1"
-  local NAME="$2"
-  local VERSION="$3"
-  shift; shift; shift; CONFIG_EXTRAS="$*"
-
-  echo "Building $NAME $VERSION at $USERPKG_BUILD"
-
-  cd "${APPROOT_BUILD}"
-
-  VERSION_NAME="${NAME}-${VERSION}"
-  URL="${URL_BASE}/${VERSION_NAME}.tar.gz"
-
-  if [ ! -d "${VERSION_NAME}" ] ; then
-  wget --no-clobber "${URL}"
-  tar xzf ${VERSION_NAME}.tar.gz
-  fi
-
-  cd "${VERSION_NAME}"
-  ./configure --prefix="${APPROOT}" ${CONFIG_EXTRAS}
-#  make 
-  make install
-}
-
-# Has someone started a new shell?
+# If APPROOT is set then ensure it is activated
 [ "$APPROOT" ] && approot_activate "$APPROOT"
