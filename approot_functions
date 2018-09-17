@@ -1,0 +1,149 @@
+#approot by Lawrence Angrave 2018
+
+#approot provides support to build and install Linux packages when the user does not have sudo privileges
+
+# MIT License
+#
+# Copyright (c) 2018 Lawrence Angrave
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+# Example installation:
+# Get the package:
+# cd $HOME; git clone https://github.com/angrave/approot/
+# echo "source ~/approot/approot_functions" >> ~/.bashrc
+
+# Create a new directory to hold local applications and initialize it
+# mkdir ~/local
+# approot_init ~/local
+
+# To start using the directory (you can add this to in your .bashrc script to)
+# approot_activate ~/local
+
+
+approot_init() {
+
+  if [ ! -d "$1" ] ; then
+    echo "approot_init expected an existing directory as the argument"
+    echo "Usage: approot_init <existing-directory>"
+    echo "  Creates (or resets) shell scripts with build variables and initializes a directory structure."
+    echo "  Most users will only need one approot so will use this command once"
+    echo '  You can re-run this command to reset approot environment variables and the ${APPROOT}/share/config.site file'
+    echo "Example use: mkdir ~/local && approot_init ~/local"
+    return 1
+  fi
+
+  local ROOT=$(realpath "$1")
+
+  echo "Initializing $ROOT/share/config.site ..."
+  [ -d "${ROOT}/share" ] || mkdir -p "${ROOT}/share"
+
+cat << EOF > "${ROOT}/share/config.site"
+  
+CPPFLAGS=-I\${APPROOT}/include)
+LIBDIR=\${APPROOT}/lib64
+LDFLAGS=-L\${LIBDIR}
+
+echo "config.site set: LIBDIR=\$LIBDIR LDFLAGS=\$LDFLAGS"
+EOF
+  
+if [ ! -f "${ROOT}/share/approot_activate_custom" ] ; then
+cat <<EOF > "${ROOT}/share/approot_activate_custom"
+
+# Example share/approot_activate_custom created by approot_init
+# Local directories will usually need \${APPROOT} as their base directory
+# realpath can be used to create absolute or relative paths
+# e.g. export mydir=\$(realpath \${APPROOT}/../neighbor)
+#
+# Uncomment these two lines to use a private directory on /tmp to download and compile packages
+#export APPROOT_BUILD="/tmp/\${USER}_appbuild"
+#mkdir -p -m700 "\${APPROOT_BUILD}" 2>/dev/null
+
+# To speed up package building on a multi-core machine
+#export MAKEFLAGS="-j4"
+
+EOF
+fi
+
+if [ ! -f "${ROOT}/share/approot_deactivate_custom" ] ; then
+echo "#Put commands here to undo changes made by approot_activate_custom e.g. unset MAKEFLAGS" > "${ROOT}/share/approot_deactivate_custom"
+fi
+
+} # approot_init()
+
+
+approot_activate() {
+  [ "$APPROOT" ] && approot_deactivate
+  
+  local APPROOT=$(pwd)
+  if [ "$1" ] ; then
+    APPROOT=$(realpath "$1")
+  fi
+  
+  if [ ! -f "${APPROOT}/share/config.site" ] ; then
+     >&2 echo "${APPROOT} is not a valid approot directory."
+     >&2 echo "Use approot_init before approot_activate."
+     unset APPROOT
+     return 1
+  fi
+  echo "Activating application root ${APPROOT}"
+
+  export APPROOT_BUILD="${APPROOT}/tmp/build"
+  export CONFIG_SITE="${APPROOT}/share/config.site"
+  export LD_LIBRARY_PATH="${APPROOT}/lib64"
+  export LIBDIR="${APPROOT}/lib64"
+  export PKG_CONFIG_PATH="${APPROOT}/pkgconfig/"
+
+  #Remember approot path so we can use it directly or remove it from PATH when deactivating
+  export APPROOT_PATH="${APPROOT}/bin"
+
+  [ -f  "${APPROOT}/share/approot_activate_custom" ] && . "${APPROOT}/share/approot_activate_custom"
+  
+  export PATH="$APPROOT_PATH:$PATH"
+  mkdir -p "${LIBDIR}" "${APPROOT_PATH}" "${APPROOT}/include" "${PKG_CONFIG_PATH}/"  2>/dev/null
+
+  # APPROOT_BUILD is often a subdir of /tmp, so we make the build directory private
+  [ -d "${APPROOT_BUILD}" ] || mkdir -p -m700 "${APPROOT_BUILD}" 2>/dev/null
+} # approot_activate
+
+
+approot_deactivate() {
+
+  # Remove old APPROOT_PATH from PATH
+  if [ "$APPROOT_PATH" ] ; then 
+    # https://stackoverflow.com/questions/407523/escape-a-string-for-a-sed-replace-pattern/2705678#2705678
+    APPROOT_PATH_UNREGEX=$(echo "$APPROOT_PATH" | sed -e 's/[]\/()$*.^|[]/\\&/g' )
+
+    export PATH=$(echo ":${PATH}:" | sed -e "s/:${APPROOT_PATH_UNREGEX}://" -e 's=^:==' -e 's=:$==' ) 
+    unset APPROOT_PATH_UNREGEX
+  fi
+  
+  if [ "${APPROOT}" ] ; then 
+    [ -f  "${APPROOT}/share/approot_deactivate_custom" ] && . "${APPROOT}/share/approot_deactivate_custom"
+  fi
+  
+  unset APPROOT_BUILD
+  unset CONFIG_SITE
+  unset LD_LIBRARY_PATH
+  unset LIBDIR
+  unset PKG_CONFIG_PATH
+  unset APPROOT
+  unset APPROOT_PATH
+} # approot_deactivate
+
