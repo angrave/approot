@@ -91,9 +91,9 @@ fi
 approot_activate() {
   [ "$APPROOT" ] && approot_deactivate
   
-  APPROOT=$(pwd)
+  export APPROOT=$(pwd)
   if [ "$1" ] ; then
-    APPROOT=$(realpath "$1")
+    export APPROOT=$(realpath "$1")
   fi
   
   if [ ! -f "${APPROOT}/share/config.site" ] ; then
@@ -186,3 +186,5 @@ approot_build() {
   make install
 }
 
+# Has someone started a new shell?
+[ "$APPROOT" ] && approot_activate "$APPROOT"

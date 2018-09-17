@@ -16,7 +16,7 @@ Use at your own risk. See the LICENSE file for more information
 cd
 git clone https://github.com/angrave/approot
 
-printf "\n. ${HOME}/approot/approot_functions\n" >> ~/.profile
+printf "\n. ${HOME}/approot/approot_functions\n" >> ~/.bashrc
 
 To use approot immediately either start a new shell or source the functions-
 . approot/approot_functions  (that lonely dot is important)
