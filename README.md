@@ -43,7 +43,7 @@ approot_deactivate
 
 The latter will unset a whole load of environment variables and remove the current `$APPROOT_PATH` from your `$PATH`
 
-##Advanced
+## Advanced: Customizing an approot environment
 You can configure your approot using 
 ```bash
 ${APPROOT}/share/approot_activate_custom #Extra commands to run when activating the application root
@@ -72,4 +72,7 @@ If I wanted readline and curl support -
 ./buildsource.sh https://ftp.gnu.org/gnu/readline readline 7.0 --without-man
 ./buildsource.sh https://curl.haxx.se/download curl 7.61.1 --without-man
 ```
+# Use the source!
 
+This project is big in utility but small in size. To find out more please read the source! 
+For example `approot_init` `approot_activate` are just shell functions defined inside `approot_functions`
