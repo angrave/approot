@@ -44,7 +44,7 @@ approot_deactivate
 The latter will unset a whole load of environment variables and remove the current `$APPROOT_PATH` from your `$PATH`
 
 ## Advanced: Customizing an approot environment
-You can configure your approot using 
+You can customize your approot environment by adding commands to the following files
 ```bash
 #Extra commands to run when activating the application root -
 ${APPROOT}/share/approot_activate_custom 
