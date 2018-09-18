@@ -56,8 +56,8 @@ For example, you can set make to compile in parallel or configure the download d
 See the example scripts inside the `example_builds/` directory
 
 ```bash
-# To make like easy we can use the buildsource script that downloads, compiles and installs a standard linux application
-# that uses ./configure  ...
+# We will the buildsource.sh script to download, compile and install a standard linux application
+# buildsource.sh assumes the project has a  ./configure step.
 
 cd ~/approot/example_builds/
 
