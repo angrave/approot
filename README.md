@@ -32,20 +32,21 @@ To use
 ```bash
 approot_activate ~/localapps
 ```
-This will set `$APPROOT`, `$PATH`, `LIBDIR` and a whole load of other environment variables. You will likely want to always use this directory so you can set it as the default application root
+This will set `$APPROOT`, `$PATH`, `LIBDIR` and a whole load of other environment variables. Most users will always want to always use this directory, so you may want to set it as the default application root in your .bashrc file
 ```bash
-printf "\n. approot_activate ${HOME}/localapps\n" >> ~/.profile 
+printf "\n. approot_activate ${HOME}/localapps\n" >> ~/.bashrc 
 ```
-To stop using a directory either approot_activate another directory or use
+To stop using a directory either `approot_activate another-directory` or use
 ```bash
 approot_deactivate
 ```
 
-The latter will unset a whole load of environment variables and reset `$PATH`
+The latter will unset a whole load of environment variables and remove the current `$APPROOT_PATH` from your `$PATH`
 
 You can configure your approot using 
 ```bash
-${APPROOT}/share/
+${APPROOT}/share/approot_activate_custom #Extra commands to run when activating the application root
+${APPROOT}/share/approot_activate_custom #Extra commands to run when deactivating the current application root
 ```
 For example you can use parallel make or download packages to the /tmp
 
