@@ -46,10 +46,19 @@ The latter will unset a whole load of environment variables and remove the curre
 ## Advanced: Customizing an approot environment
 You can configure your approot using 
 ```bash
-${APPROOT}/share/approot_activate_custom #Extra commands to run when activating the application root
-${APPROOT}/share/approot_activate_custom #Extra commands to run when deactivating the current application root
+#Extra commands to run when activating the application root -
+${APPROOT}/share/approot_activate_custom 
+#Extra commands to run when deactivating the current application root
+${APPROOT}/share/approot_deactivate_custom 
 ```
-For example, you can set make to compile in parallel or configure the download directory to be inside /tmp
+For example, we can set make to compile in parallel or configure the download directory to be inside /tmp
+```bash
+#approot_activate_custom
+
+export APPROOT_BUILD="/tmp/${USER}_appbuild"
+mkdir -p -m700 "${APPROOT_BUILD}" 2>/dev/null
+export MAKEFLAGS="-j4"
+```
 
 # Building Applications
 
