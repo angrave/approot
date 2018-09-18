@@ -1,5 +1,5 @@
 # approot
-Build and install standard Linux applications and library without sudo
+Build, install and run standard Linux applications and libraries as a non-admin user. `sudo make install` _not_ required.
 
 # License and Warranty
 
