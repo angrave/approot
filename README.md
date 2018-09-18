@@ -43,10 +43,14 @@ approot_deactivate
 
 The latter will unset a whole load of environment variables and remove the current `$APPROOT_PATH` from your `$PATH`
 
+##Advanced
 You can configure your approot using 
 ```bash
 ${APPROOT}/share/approot_activate_custom #Extra commands to run when activating the application root
 ${APPROOT}/share/approot_activate_custom #Extra commands to run when deactivating the current application root
 ```
-For example you can use parallel make or download packages to the /tmp
+For example, you can set make to compile in parallel or configure the download directory to be inside /tmp
 
+# Building Applications
+
+See the example scripts inside the example_builds/ directory
