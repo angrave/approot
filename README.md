@@ -53,7 +53,7 @@ For example, you can set make to compile in parallel or configure the download d
 
 # Building Applications
 
-See the example scripts inside the example_builds/ directory
+See the example scripts inside the `example_builds/` directory
 
 ```bash
 # To make like easy we can use the buildsource script that downloads, compiles and installs a standard linux application
@@ -71,5 +71,5 @@ If I wanted readline and curl support -
 ./buildsource.sh https://ftp.gnu.org/gnu/ncurses ncurses 6.1 --without-man
 ./buildsource.sh https://ftp.gnu.org/gnu/readline readline 7.0 --without-man
 ./buildsource.sh https://curl.haxx.se/download curl 7.61.1 --without-man
-```bash
+```
 
