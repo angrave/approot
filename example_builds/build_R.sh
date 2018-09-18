@@ -5,4 +5,4 @@
 #buildsource.sh https://cloud.r-project.org/src/base/R-3 R 3.5.1 "--with-readline=no"
 
 # This might build without man page support...
-buildsource.sh https://cloud.r-project.org/src/base/R-3 R 3.5.1 " --without-man"
+buildsource.sh https://cloud.r-project.org/src/base/R-3 R 3.5.1 --without-man

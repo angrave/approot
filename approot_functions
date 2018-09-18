@@ -72,11 +72,11 @@ cat <<EOF > "${ROOT}/share/approot_activate_custom"
 # e.g. export mydir=\$(realpath \${APPROOT}/../neighbor)
 #
 # Uncomment these two lines to use a private directory on /tmp to download and compile packages
-#export APPROOT_BUILD="/tmp/\${USER}_appbuild"
-#mkdir -p -m700 "\${APPROOT_BUILD}" 2>/dev/null
+export APPROOT_BUILD="/tmp/\${USER}_appbuild"
+mkdir -p -m700 "\${APPROOT_BUILD}" 2>/dev/null
 
 # To speed up package building on a multi-core machine
-#export MAKEFLAGS="-j4"
+export MAKEFLAGS="-j4"
 
 EOF
 fi
