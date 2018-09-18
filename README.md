@@ -23,7 +23,7 @@ To use approot immediately either start a new shell or source the functions-
 . approot/approot_functions  (that lonely dot is important)
 ```
 
-Then create a directory well applications will be installed
+Then create a directory where applications will be installed
 ```bash
 mkdir ~/localapps
 approot_init ~/localapps
@@ -32,7 +32,7 @@ To use
 ```bash
 approot_activate ~/localapps
 ```
-This will set `$APPROOT`, `$PATH`, `LIBDIR` and a whole load of other environment variables. Most users will always want to always use this directory, so you may want to set it as the default application root in your .bashrc file
+This will set `$APPROOT`, `$PATH`, `LIBDIR` and a whole load of other environment variables. Most users will always want to always use this directory for all their applications, so you can set it as the default application root in your .bashrc file
 ```bash
 printf "\n. approot_activate ${HOME}/localapps\n" >> ~/.bashrc 
 ```
@@ -54,3 +54,22 @@ For example, you can set make to compile in parallel or configure the download d
 # Building Applications
 
 See the example scripts inside the example_builds/ directory
+
+```bash
+# To make like easy we can use the buildsource script that downloads, compiles and installs a standard linux application
+# that uses ./configure  ...
+
+cd ~/approot/example_builds/
+
+# Or whatever directory you like to install your packages in
+approot_activate ~/local
+
+./buildsource.sh https://cloud.r-project.org/src/base/R-3 R 3.5.1 --without-man --with-readline=no
+R -e 'install.packages("rstan",repos="http://cran.us.r-project.org")'
+
+If I wanted readline and curl support -
+./buildsource.sh https://ftp.gnu.org/gnu/ncurses ncurses 6.1 --without-man
+./buildsource.sh https://ftp.gnu.org/gnu/readline readline 7.0 --without-man
+./buildsource.sh https://curl.haxx.se/download curl 7.61.1 --without-man
+```bash
+
